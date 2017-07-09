@@ -1,0 +1,59 @@
+<div *ngIf="!editMode" @mainFormAnimation>
+<form [formGroup]="currentTodo" (ngSubmit)="addTodo(currentTodo.value)">
+  <div class="form-container col">
+    <div class="row colums">
+      <h1>ADD YOUR TODO</h1>
+        <label for="title">
+          Title
+          <input type="text" formControlName="title">
+        </label>
+        <div class="alert" *ngIf="!currentTodo.controls['title'].valid && currentTodo.controls['title'].touched">This Field is Required and minimum 5 max 50 alphabets are required</div>    
+        <label for="description">
+          Description
+          <textarea formControlName="description"></textarea>
+        </label>
+        <div class="alert" *ngIf="!currentTodo.controls['description'].valid && currentTodo.controls['description'].touched">This Field is Required and minimum 15 max 300 alphabets are required</div>
+        <input type="submit" class="button expanded" value="Add Todo" [disabled]="!currentTodo.valid">
+  </div>
+  </div>
+</form>
+
+<div  id="container" [@listAnimation]="FBtodos.length">
+      <div class="todo-container" id="list" *ngFor="let todo of FBtodos | async; let i = index" >
+        <div class="row colums" >
+          <button class="button todo-btn" (click)="deleteTodo(i)">Delete</button>
+          <button class="button todo-btn" (click)="editTodo(i)">Edit</button>
+          <h5>{{todo.title}}</h5>
+          <p>{{todo.description}}</p>
+        </div>
+      </div>
+</div>
+
+</div>
+
+<div *ngIf="editMode">
+  <form  #commentForm="ngForm" novalidate>
+      <div class="form-container">
+        <label for="name">Title</label>
+        <input type="text"  [(ngModel)]="editTodos.title" #title="ngModel" name="title" id="title" class="form-control" maxlength="50" required/>
+        <!--Validation Divs For Title-->
+        <div *ngIf="title.errors && (title.dirty || title.touched)" class="alert alert-danger">
+          <div [hidden]="!title.errors.required">Title is Required!</div>
+        </div>
+
+        <label for="name">Your Description</label>
+        <textarea id="description"  [(ngModel)]="editTodos.description" #description="ngModel" name="description" class="form-control" rows="5" required></textarea>
+        <!--Validation Divs For Comment-->
+        <div *ngIf="description.errors && (description.dirty || description.touched)" class="alert alert-danger">
+          <div [hidden]="!description.errors.required">Name is Required!</div>
+        </div>
+
+        <button type="submit" [disabled]="!commentForm.form.valid" class="button" (click)="updateTodo()">Update</button>
+        <button type="button" class="button" (click)="cancel()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+
+
+
